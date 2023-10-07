@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+div.tooltip-donut {
+     position: absolute;
+     text-align: center;
+     padding: .5rem;
+     background: #FFFFFF;
+     color: #313639;
+     border: 1px solid #313639;
+     border-radius: 8px;
+     pointer-events: none;
+     font-size: 0.5rem;
+}
+</style>
+    <title>Functionize ESI Analyzer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!--<script
+            src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js">
+    </script>-->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+
+    <script th:inline="javascript">
+        var coordinates = [[${coordinates}]];
+        var psrCoordinates = [[${psrCoordinates}]];
+        var curJson = [[${curJson}]];
+        var psrJson = [[${psrJson}]];
+        var actionId = [[${actionId}]];
+        var project = [[${project}]];
+        var testId = [[${testId}]];
+        var jobId = [[${jobId}]];
+        var psrJobId = [[${psrJobId}]];
+        var dslCommand = [[${dslCommand}]];
+        var psrType = [[${psrType}]];
+        var selectedNodeId = -1;
+        var actionType = [[${actionType}]];
+    </script>
+<script src="js/FileSaver.min.js"></script>
+<script src="js/jszip.min.js"></script>
+<script src="js/parse_coor.js"></script>
+
+
+
+</head>
+<body>
+<table class="table">
+    <tr>
+        <th>Detail</th><th>Value</th>
+    </tr>
+<tr th:if="${project != null}">
+    <td>Project</td><td th:text="${project}"></td>
+</tr>
+<tr th:if="${testId != null}">
+    <td>Test ID</td><td th:text="${testId}"></td>
+</tr>
+<tr th:if="${jobId != null}">
+    <td>Job ID</td><td th:text="${jobId}"></td>
+</tr>
+<tr th:if="${actionId != null}">
+    <td>Action ID</td><td th:text="${actionId}"></td>
+</tr>
+<tr th:if="${actionType != null}">
+    <td>Action Type</td><td th:text="${actionType}"></td>
+</tr>
+<tr th:if="${architectVersion != null}">
+    <td>Architect version</td><td th:text="${architectVersion}"></td>
+</tr>
+<tr th:if="${rustBuildNumber != null}">
+    <td>Rust build number</td><td th:text="${rustBuildNumber}"></td>
+</tr>
+<tr th:if="${step != null}">
+    <td>Step</td><td th:text="${step}"></td>
+</tr>
+<tr th:if="${poId != null}">
+    <td>PO ID</td><td th:text="${poId}"></td>
+</tr>
+<tr>
+    <td>DSL command</td><td th:text="${dslCommand}"></td>
+</tr>
+<tr th:if="${psrType != null}">
+    <td>PSR data type</td><td th:text="${psrType}"></td>
+</tr>
+<tr th:if="${psrJobId != null}">
+    <td>PSR Job ID</td><td th:text="${psrJobId}"></td>
+    <td><button type="button" class="btn btn-primary" onclick="analyze_psr();">Analyze PSR</button></td>
+</tr>
+<tr th:if="${psrSelectedNodeId != null}">
+    <td>PSR selected node ID</td><td th:text="${psrSelectedNodeId}"></td>
+</tr>
+<tr th:if="${adjointModel != null}">
+   <td>Self-heal validation</td><td th:text="${adjointModel}"></td>
+</tr>
+<tr th:if="${timingSlider != null}">
+    <td>Timing slider</td><td th:text="${timingSlider}"></td>
+</tr>
+
+<tr th:if="${timeTakenTimingModel != null}">
+    <td>Timing model duration (ms) </td><td th:text="${timeTakenTimingModel}"></td>
+</tr>
+<tr th:if="${selectedNode != null}">
+    <td>Selected node</td><td th:text="${selectedNode}"></td>
+</tr>
+<tr th:if="${curNodeSize != null}">
+    <td>Node size in selection</td><td th:text="${curNodeSize}"></td>
+</tr>
+<tr>
+    <td>Top nodes</td><td th:text="${topNodes}"></td>
+</tr>
+<tr>
+    <td>Image scale</td><td th:text="${scale}"></td>
+</tr>
+<tr>
+    <td>Error message from ESI-analyzer (if any)</td><td th:text="${errorMsg}"></td>
+</tr>
+<tr>
+    <td>Info/debug log from ESI-analyzer (if any)</td><td th:text="${infoMsg}"></td>
+</tr>
+</table>
+<!--<p th:text="'Project :  ' + ${project} + ''" />
+<p th:text="'Test ID :  ' + ${testId} + ''" />
+<p th:text="'Job ID :  ' + ${jobId} + ''" />
+<p th:text="'Action ID :  ' + ${actionId} + ''" />
+<p th:text="'Step :  ' + ${step} + ''" />
+
+<p th:text="'DSL Command :  ' + ${dslCommand} + ''" />
+
+
+<p th:text="'PSR Data Type :  ' + ${psrType} + ''" />
+<p th:text="'Selected node :  ' + ${selectedNode} + ''" />
+<p th:text="'Top nodes :  ' + ${topNodes} + ''" />
+<p th:text="'Point :  ' + ${point} + ''" />
+<p th:text="'ViewPortW :  ' + ${viewPortW} + ''" />
+<p th:text="'ViewPortH :  ' + ${viewPortH} + ''" />
+<p th:text="'offsetX :  ' + ${offsetX} + ''" />
+<p th:text="'offsetY :  ' + ${offsetY} + ''" />
+<p th:text="'Image scale :  ' + ${scale} + ''" />-->
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" onclick="download_file();">Download current and PSR JSON files</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" onclick="submit_retraining(selectedNodeId);">Retrain with selected node ID</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="specificNodeId">Retrain with specific node ID</label>
+        </div>
+        <div class="col">
+            <input type="text" name="specificNodeId" class="form-control" id="specificNodeId" aria-describedby="specificNodeId" placeholder="Retrain with specific node ID">
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" onclick="submit_retraining(document.getElementById('specificNodeId').value);">Retrain with specified node ID</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="psrScreenshotDivParent" id="psrScreenshotDivParent" style="position: relative;">
+    <div class="accordion-item" >
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    PSR Screenshot (click to show/hide)
+                </button>
+            </h2>
+
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#psrScreenshotDivParent">
+            <div class="accordion-body" >
+                <div class="psrConImage" style="position: relative;">
+                    <img  alt="Screenshot not available" th:src="'data:image/png;base64, ' + ${psrScreenshotURL}" style="position: relative;">
+                    <!--    <div class="boxes" ref="boxes" style="width: fit-content; height: fit-content; position: absolute; top: 0px; left: 0px;"></div>-->
+
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    <div class="boxes" ref="boxes" style="width: fit-content; height: fit-content; position: absolute; top: 0px; left: 0px;"></div>-->
+
+</div>
+
+<h2>Current Run Screenshot</h2>
+<div class="form-group">
+    <label for="currentNodeId">Node ID</label>
+    <input type="text" name="currentNodeId" class="form-control" id="currentNodeId" aria-describedby="currentNodeId" placeholder="Enter Node ID">
+    <button type="button" name="submitButton" class="btn btn-primary" onclick="getNodeIdAttributes(parseInt(document.getElementById('currentNodeId').value));">Get Node ID attributes</button>
+
+</div>
+<div class="conImage" style="position: relative;">
+<img  alt="Screenshot not available" th:src="'data:image/png;base64, ' + ${currentRunScreenshotURL}" style="position: relative;">
+<!--    <div class="boxes" ref="boxes" style="width: fit-content; height: fit-content; position: absolute; top: 0px; left: 0px;"></div>-->
+
+    <br><br>
+</div>
+
+<div class="node_details">
+
+</div>
+
+</body>
+</html>

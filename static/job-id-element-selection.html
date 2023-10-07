@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ESI Analyzer - Home</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="card-body">
+  <h5 class="card-title">ESI Analyzer</h5>
+</div>
+<div class="container">
+  <form action="/job-id-element-selection-process" method="get" onsubmit="this.submitButton.innerText = 'Analyzing Run...';this.submitButton.disabled=true; return true;">
+    <!--<div class="form-group">
+      <label for="project">Project</label>
+      <select class="form-select" id="project" name="project" aria-label="Project">
+        <option value="functionize" selected>Functionize</option>
+        <option value="eu-vae-functionize">EU VAE</option>
+        <option value="wipro-functionize">Wipro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="testId">Test ID</label>
+      <input type="text" name="testId" class="form-control" id="testId" aria-describedby="testId" placeholder="Enter test ID">
+
+    </div>
+    <div class="form-group">
+      <label for="jobId">Job ID</label>
+      <input type="text" name="jobId" class="form-control" id="jobId" aria-describedby="jobId" placeholder="Enter job ID">
+
+    </div>-->
+    <div class="form-group">
+      <label for="actionId">Action ID</label>
+      <input type="text" name="actionId" class="form-control" id="actionId" aria-describedby="actionId" placeholder="Enter action ID">
+
+    </div>
+
+    <div class="form-group">
+      <label for="dslCommand">DSL Command</label>
+      <textarea type="text" name="dslCommand" class="form-control" id="dslCommand" aria-describedby="dslCommand" placeholder="Enter DSL Command if any"></textarea>
+
+    </div>
+    <div class="form-group">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="adjointModel" name="adjointModel">
+        <label class="form-check-label" for="adjointModel">Enable self-heal validation</label>
+      </div>
+    </div>
+
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" value="ARCHITECT" name="psrType" id="preferredPSR1">
+      <label class="form-check-label" for="preferredPSR1">Architect (Ignore PSR)</label>
+
+      <input class="form-check-input" type="radio" value="SMARTFIX" name="psrType" id="preferredPSR2">
+      <label class="form-check-label" for="preferredPSR2">Quickselect</label>
+
+      <input class="form-check-input" type="radio" value="NOPREF" name="psrType" id="preferredPSR3" checked>
+      <label class="form-check-label" for="preferredPSR3">No preference.</label>
+
+    </div>
+    <div class="form-group">
+      <label for="serverLogLink">Server Log Link </label>
+      <input type="text" name="serverLogLink" class="form-control" id="serverLogLink" aria-describedby="server log link" placeholder="Enter server log link">
+
+    </div>
+
+    <button type="submit" name="submitButton" class="btn btn-primary" >Submit</button>
+  </form>
+</div>
+</body>
+</html>

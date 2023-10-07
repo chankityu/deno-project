@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Functionize ESI Analyzer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<p th:text="'Selector type is set to:  ' + ${selectorType} + ''" />
+<p th:text="'ML Data is present: ' + ${MLDataPresent} + ''" />
+<p th:text="'ML Data Type used for previous data ' + ${psrType} + ''" />
+<p th:text="'DSL Command used is ' + ${dslCommand} + ''" />
+<p th:text="'Timing model took ' + ${timeTakenTimingModel} + 'ms'" />
+
+<p style="white-space: pre;" th:if="${architectNodeId!=null}" th:text="'Selected node in architect is node ID ' + ${architectNodeId} + ' and its attributes are as below: '" />
+
+<table th:if="${architectAttributes}">
+<tr><th>Attributes</th><th>Values</th></tr>
+<tr th:each="mapEntry : ${architectAttributes}">
+    <td th:text="${mapEntry.key}"></td>
+    <td th:text="${mapEntry.value}"></td>
+</tr>
+</table>
+
+<p th:if="${psrNodeId!=null}" th:text="'Selected node in PSR run ID ' + ${psrId} + ' is node ID ' + ${psrNodeId} + ' and its attributes are as below'" />
+<input type="button" th:if="${psrId}"  th:data-jobId="${psrId}" th:data-actionid="${actionId}" th:data-project="${project}" th:data-testid="${testId}" onclick="window.location.href = window.location.protocol + '//' + window.location.host + '/analyze?jobId='  + this.getAttribute('data-jobid') + '&actionId=' + this.getAttribute('data-actionid') + '&project=' + this.getAttribute('data-project') + '&testId=' + this.getAttribute('data-testid')" value="Click to analyze PSR run"/>
+<table th:if="${psrAttributes}">
+    <tr><th>Attributes</th><th>Values</th></tr>
+    <tr th:each="mapEntry : ${psrAttributes}">
+        <td th:text="${mapEntry.key}"></td>
+        <td th:text="${mapEntry.value}"></td>
+    </tr>
+</table>
+
+<p th:if="${quickSelectNodeId!=null}" th:text="'Selected node in quickselect is node ID ' + ${quickSelectNodeId} + ' and its attributes are ' + ${quickSelectAttributes} + '!'" />
+<table th:if="${quickSelectAttributes}">
+    <tr><th>Attributes</th><th>Values</th></tr>
+    <tr th:each="mapEntry : ${quickSelectAttributes}">
+        <td th:text="${mapEntry.key}"></td>
+        <td th:text="${mapEntry.value}"></td>
+    </tr>
+</table>
+
+</br>
+<p th:text="'Selected node in current run is ' + ${selectedNodeId} + ' and its attributes are as below '" />
+<table th:if="${selectedNodeAttributes}">
+    <tr><th>Attributes</th><th>Values</th></tr>
+    <tr th:each="mapEntry : ${selectedNodeAttributes}">
+        <td th:text="${mapEntry.key}"></td>
+        <td th:text="${mapEntry.value}"></td>
+    </tr>
+</table>
+
+<h2>Current Run Screenshot</h2>
+<img  alt="Screenshot not available" th:src="'data:image/png;base64, ' + ${currentRunScreenshotURL}">
+<br><br>
+<h2 th:if="${architectRunScreenshotURL}"> Architect screenshot</h2>
+<img th:if="${architectRunScreenshotURL}" alt="Screenshot not available" th:src="'data:image/png;base64, ' + ${architectRunScreenshotURL}">
+<br><br>
+<h2 th:if="${psrScreenshotURL}">PSR Screenshot</h2>
+<img th:if="${psrScreenshotURL}" alt="Screenshot not available" th:src="'data:image/png;base64, ' + ${psrScreenshotURL}">
+<br><br>
+
+</body>
+</html>
